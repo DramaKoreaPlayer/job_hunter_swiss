@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Résultats (générés à chaque run)
+results/*.xlsx
+results/*.json
+
+# Cache local
+job_cache.db
+
+# Node (generate_cv)
+node_modules/
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Antiquité
+pyrightconfig.json
+.aider*

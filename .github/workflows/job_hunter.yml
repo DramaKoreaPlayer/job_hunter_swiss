@@ -1,0 +1,52 @@
+name: 🔍 Job Hunter - Scan automatique
+
+on:
+  schedule:
+    # Toutes les 6h : 00h, 06h, 12h, 18h UTC
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Permet le lancement manuel
+
+jobs:
+  scan-user:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: 📦 Installer les dépendances
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install chromium
+          python -m playwright install-deps
+
+      - name: 📂 Restaurer le cache des offres
+        uses: actions/cache@v4
+        with:
+          path: results/job_cache.db
+          key: job-cache-user-${{ github.run_id }}
+          restore-keys: |
+            job-cache-user-
+
+      - name: 🔍 Lancer le scan
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          mkdir -p results
+          python main.py --quick --incremental --notify --profile user
+
+      - name: 💾 Sauvegarder les résultats
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultats-${{ github.run_number }}
+          path: results/
+          retention-days: 7
