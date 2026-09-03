@@ -39,6 +39,9 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # App web Job Hunter — laisser vide désactive simplement la synchro
+          JOBHUNTER_URL: ${{ secrets.JOBHUNTER_URL }}
+          JOBHUNTER_INGEST_TOKEN: ${{ secrets.JOBHUNTER_INGEST_TOKEN }}
         run: |
           mkdir -p results
           python main.py --quick --incremental --notify --profile user
