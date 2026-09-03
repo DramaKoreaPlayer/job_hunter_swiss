@@ -397,6 +397,16 @@ async def main():
         json_path = export_to_json(analyzed_offers, queries)
 
         # ═══════════════════════════════
+        # Synchronisation vers l'app web Job Hunter
+        # ═══════════════════════════════
+        from utils.jobhunter_sync import sync_to_jobhunter
+        synced = await sync_to_jobhunter(analyzed_offers)
+        if synced >= 0:
+            console.print(
+                f"[bold green]🌐 Job Hunter : {synced} offres synchronisées vers l'app[/bold green]"
+            )
+
+        # ═══════════════════════════════
         # Notification Telegram
         # ═══════════════════════════════
         if args.notify:
